@@ -1,60 +1,38 @@
-<!DOCTYPE html>
-<html lang="fr" >
-    <head>
-        <meta charset="utf-8" />
-        <meta name="author" content="Lilhoot.eu" />
-        <title>Space Invader</title>
+<html>
+<head>
+    <title>invder</title>
+    <style type='text/css'>
+        body {
+            background: #000;
+        }
+        #conteneur {
+            width: 600px;
+            height: 800px;
+            border: 1px solid #333;
+            margin: 0 auto;
+            background: #FFF;
+            text-align: center;
 
-        <link href="css/main.css" rel="stylesheet" type="text/css" />
-
-        <script src="js/jquery-1.7.1.min.js"></script>
-        <script src="js/invader.js"></script>
-    </head>
-    <body>
-        <div id="debug" style="position: absolute; left: 10px; width: 200px;"></div>
-        <div id="game_frame">
-			<div id="game_object">
-				<div id="indicators">
-					<div id="pause">
-						<input type="button" id="pause_btn" value="Pause" />
-						<input type="button" id="resume_btn" value="Reprise" />
-					</div>
-					<div id="score"></div>
-					<div id="played"></div>
-					<div id="level"></div>
-					<div id="lines"></div>
-					<div id="monsters"></div>
-					<div id="shots"></div>
-					<div id="killed"></div>
-					<div id="shot_ratio"></div>					
-					<div id="killed_ratio"></div>	
-									
-					<div><hr />
-						Difficulté: <br />
-						<form method="post" target="">
-							<input type="radio" name="gp" value="1" checked="checked" /> Enfantin<br />
-							<input type="radio" name="gp" value="2" /> Facile<br />
-							<input type="radio" name="gp" value="3" /> Moyen<br />
-							<input type="radio" name="gp" value="4" /> Dur<br />
-							<input type="radio" name="gp" value="5" /> Très dur
-						</form>
-					</div>
-					<div><hr />
-						Megashot: <br />
-						<form method="post" target="">
-							<input type="radio" name="megashot" value="1" checked="checked" /> Non<br />
-							<input type="radio" name="megashot" value="2" /> Oui<br />
-
-						</form>
-					</div>
-					<div id="abandon"><input type="button" id="abandon_btn" value="Abandonner" /></div>				
-				</div>
-				
-				<div id="board"></div>
-			</div>
-        </div>
-        
-        
-		
-    </body>
+        }
+        h1, h2 {
+            text-align: center;
+            font-variant: small-caps;
+            color: #FFF;
+        }
+    </style>
+</head>
+<body>
+<h1>Invader Canvas</h1>
+<h2>Score <span id="score"></span></h2>
+<div id='conteneur'>
+    <canvas id="canvas" width="600" height="800">
+        Nope.
+    </canvas>
+</div>
+</body>
+<script src="js/jquery-1.7.1.min.js"></script>
+<script src="js/jquery.hotkeys.js"></script>
+<script src="js/key_status.js"></script>
+<script src="js/loadash.js"></script>
+<script src="js/script.js"></script>
 </html>
