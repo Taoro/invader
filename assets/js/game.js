@@ -295,6 +295,13 @@ function pauseGame() {
 
 function endGame() {
     pauseGame();
+
+    var playerName = prompt("Enter yournickname", "Anonymous");
+    xhr.open('POST', 'ajax.php');
+    xhr.send('playerName=' + encodeURIComponent(playerName) + '&playerScore=' + encodeURIComponent(player.score.toString())
+            + '&playerLevel=' + encodeURIComponent(player.level.toString()) + '&statDestroyed=' + encodeURIComponent(stats.destroy.toString())
+            + '&statMissed=' + encodeURIComponent(stats.missed.toString()) + '&statShotFired=' + encodeURIComponent(stats.shotFired.toString())
+    );
 }
 
 function clearScreen() {
