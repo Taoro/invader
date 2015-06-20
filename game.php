@@ -7,7 +7,12 @@
 	</div>
 
 	<div id="score_side">
-		<p>Score <span id="score"></span></p>
+        <p>Level <span id="level"></span></p>
+        <p>Score <span id="score"></span></p>
+        <br>
+        <p>Apple missed <span id="missed"></span></p>
+        <p>Apple destroyed <span id="destroyed"></span></p>
+        <p>Shot fired <span id="fired"></span></p>
 	</div>
 </div>
 

@@ -1,9 +1,7 @@
-//#region Variables & constantes
-
 // Constantes du jeu
 var GAME_WIDTH = 500;
 var GAME_HEIGHT = 600;
-var GAME_ENEMY_NUMBER = 20;
+var GAME_ENEMY_NUMBER = 50;
 var GAME_PIXEL_MOVE = 8;
 var SHOT_LIMIT = 5;
 var CONTEXT;
@@ -16,14 +14,23 @@ var SHOT_SIZE = {
 var player = {
     posX : 0,
     posY : 0,
-    size : 50,
-    score : 0
+    sizeX: 37,
+    sizeY : 50,
+    level: 1,
+    score : 1
+};
+
+var stats = {
+    destroy: 0,
+    missed: 0,
+    shotFired: 0
 };
 
 var enemy = {
     id : 0,
     posX : 0,
     posY : 0,
+    speed: 1,
     size : 40
 };
 
@@ -41,8 +48,7 @@ var imageEnemy;
 var interval;
 var isPaused;
 var countImageLoad = 0;
-
-//#endregion
+var difficultyMultiplicator;
 
 $(document).ready(function(){
     // get context
@@ -51,19 +57,19 @@ $(document).ready(function(){
 
     imagePlayer.onload = function() {
         countImageLoad++;
-        temp();
+        loadImages();
     };
     imageShot.onload = function() {
         countImageLoad++;
-        temp();
+        loadImages();
     };
     imageEnemy.onload = function() {
         countImageLoad++;
-        temp();
+        loadImages();
     };
 });
 
-function temp() {
+function loadImages() {
     if(countImageLoad == 3) {
         playGame();
     }
@@ -89,8 +95,6 @@ function initGame() {
     imageEnemy = new Image();
     imageEnemy.src = 'assets/img/pomme.png';
 
-    console.log(imageEnemy);
-
     isPaused = false;
     return true;
 }
@@ -102,8 +106,8 @@ function playGame() {
 }
 
 function loadGame() {
-    player.posX = (GAME_WIDTH/2) - (player.size/2);
-    player.posY = (GAME_HEIGHT-player.size*2);
+    player.posX = (GAME_WIDTH/2) - (player.sizeX/2);
+    player.posY = (GAME_HEIGHT-(player.sizeY+10));
 
     tabEnemies = [];
     tabShot = [];
@@ -114,23 +118,30 @@ function loadGame() {
             id : _.uniqueId(),
             posX : _.random(0, GAME_WIDTH-enemy.size),
             posY : _.random(0, -GAME_HEIGHT),
+            speed: 1,
             size: 40
         };
-        CONTEXT.drawImage(imageEnemy, enemy.posX, enemy.posY, enemy.size, enemy.size);
         tabEnemies.push(enemy);
     }
 
-    CONTEXT.drawImage(imagePlayer, player.posX, player.posY, player.size, player.size);
+    CONTEXT.drawImage(imagePlayer, player.posX, player.posY, player.sizeX, player.sizeY);
 }
 
 function refreshGame() {
 
     document.getElementById('score').innerHTML =  player.score.toString();
+    document.getElementById('level').innerHTML =  player.level.toString();
+
+    document.getElementById('destroyed').innerHTML =  stats.destroy.toString();
+    document.getElementById('missed').innerHTML =  stats.missed.toString();
+    document.getElementById('fired').innerHTML =  stats.shotFired.toString();
 
     clearScreen();
 
+    //gestionScore();
+
     // Réaffichage de la barre
-    CONTEXT.drawImage(imagePlayer, player.posX, player.posY, player.size, player.size);
+    CONTEXT.drawImage(imagePlayer, player.posX, player.posY, player.sizeX, player.sizeY);
 
     // Move shots & missiles
     if(tabShot.length > 0) {
@@ -140,8 +151,27 @@ function refreshGame() {
     // move enemies
     _.map(tabEnemies, moveEnemy);
 
-    // TODO: Gestion niveau avec le score
-    // TODO: Arrêter le jeu si score = 0. (instaurer defense?)
+}
+
+function gestionScore() {
+
+    difficultyMultiplicator = player.score - (50*player.level);
+    if(difficultyMultiplicator > 0) {
+        console.log("++ score");
+        for(var i=1;i<(GAME_ENEMY_NUMBER / difficultyMultiplicator);i++) {
+            enemy = {
+                id : _.uniqueId(),
+                posX : _.random(0, GAME_WIDTH-enemy.size),
+                posY : _.random(0, -10000),
+                speed: (this.speed + 1),
+                size: 40
+            };
+            tabEnemies.push(enemy);
+        }
+        player.score = 0;
+        player.level += 1;
+    }
+
 }
 
 function moveShot(myShot, index) {
@@ -156,25 +186,24 @@ function moveShot(myShot, index) {
 
         CONTEXT.drawImage(imageShot, myShot.posX, myShot.posY, SHOT_SIZE.width, SHOT_SIZE.heigth);
         //drawRectangle(myShot.posX, myShot.posY, SHOT_SIZE.width, SHOT_SIZE.heigth, "purple");
-        //console.log(myShot);
     }
 }
 
 function moveEnemy(myEnemy, indexEnemy) {
 
-    myEnemy.posY += 1;
+    myEnemy.posY += myEnemy.speed;
 
     if( myEnemy.posY >= GAME_HEIGHT )
     {
         myEnemy.posX = _.random(0, GAME_WIDTH-myEnemy.size);
         myEnemy.posY = _.random(0, -1000);
-
-        player.score -= 2;
+        player.score -= 1;
+        stats.missed += 1;
     }
 
     // check collision with player
-    if (myEnemy.posX < player.posX + player.size && myEnemy.posX + myEnemy.size > player.posX &&
-        myEnemy.posY < player.posY + player.size && myEnemy.size + myEnemy.posY > player.posY) {
+    if (myEnemy.posX < player.posX + player.sizeX && myEnemy.posX + myEnemy.size > player.posX &&
+        myEnemy.posY < player.posY + player.sizeY && myEnemy.size + myEnemy.posY > player.posY) {
         endGame();
     }
 
@@ -189,12 +218,12 @@ function moveEnemy(myEnemy, indexEnemy) {
 
             player.score += 3;
             _.pull(tabShot, myShot);
+
+            stats.destroy += 1;
         }
     });
 
     CONTEXT.drawImage(imageEnemy, myEnemy.posX, myEnemy.posY, myEnemy.size, myEnemy.size);
-    console.log(imageEnemy, myEnemy.posX, myEnemy.posY, myEnemy.size, myEnemy.size);
-    //drawRectangle(myEnemy.posX, myEnemy.posY, myEnemy.size, myEnemy.size, "red");
 }
 
 function keyPressed() {
@@ -210,7 +239,7 @@ function keyPressed() {
      */
     // RIGHT
     if (keydown.right) {
-        if ( (player.posX+GAME_PIXEL_MOVE+player.size) <= GAME_WIDTH )
+        if ( (player.posX+GAME_PIXEL_MOVE+player.sizeX) <= GAME_WIDTH )
         {
             player.posX += GAME_PIXEL_MOVE;
         }else {
@@ -220,35 +249,32 @@ function keyPressed() {
 
     // LEFT
     if (keydown.left) {
-        // console.log("player.posX: "+player.posX+" game width: "+GAME_PIXEL_MOVE);
         if ( (player.posX - GAME_PIXEL_MOVE) >= 0 )
         {
             player.posX -= GAME_PIXEL_MOVE;
         }else{
-            player.posX = (GAME_WIDTH - player.size);
+            player.posX = (GAME_WIDTH - player.sizeX);
         }
 
     }
 
     // UP
     if (keydown.up) {
-        //if ( ((barreX-PXL_DEPLA)) >= 0 )  barreX -= PXL_DEPLA;
         player.posY -= GAME_PIXEL_MOVE;
     }
 
     // DOWN
     if (keydown.down) {
-        //if ( ((barreX-PXL_DEPLA)) >= 0 )  barreX -= PXL_DEPLA;
         player.posY += GAME_PIXEL_MOVE;
     }
 
     if(keydown.space && tabShot.length < SHOT_LIMIT) {
         shot = {
-            posX: player.posX + (player.size/2),
+            posX: player.posX + (player.sizeX/2),
             posY: player.posY - SHOT_SIZE.width
         };
-
         tabShot.push(shot);
+        stats.shotFired += 1;
     }
 
     if(keydown.return) {
@@ -267,9 +293,8 @@ function pauseGame() {
     }
 }
 
-function drawRectangle(x, y, w, h, c) {
-    CONTEXT.fillStyle = c;
-    CONTEXT.fillRect(x, y, w, h);
+function endGame() {
+    pauseGame();
 }
 
 function clearScreen() {
