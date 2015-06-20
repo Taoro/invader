@@ -66,3 +66,45 @@ nav ul {
 #score_side {
 	width: 30%;
 }
+
+.center {
+    text-align: center;
+}
+
+table { border-collapse: collapse; border-spacing: 0; }
+
+#highscore {
+    margin: 0 auto;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+#highscore thead {
+    cursor: pointer;
+    background: #c9dff0;
+}
+#highscore thead tr th {
+    font-weight: bold;
+    padding: 12px 30px;
+    padding-left: 42px;
+}
+#highscore thead tr th span {
+    padding-right: 20px;
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+}
+
+#highscore thead tr th.headerSortUp, #highscore thead tr th.headerSortDown {
+    background: #acc8dd;
+}
+
+#highscore tbody tr {
+    color: #555;
+}
+#highscore tbody tr td {
+    text-align: center;
+    padding: 15px 10px;
+}
+#highscore tbody tr td.lalign {
+    text-align: left;
+}

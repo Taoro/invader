@@ -302,6 +302,8 @@ function endGame() {
             + '&playerLevel=' + encodeURIComponent(player.level.toString()) + '&statDestroyed=' + encodeURIComponent(stats.destroy.toString())
             + '&statMissed=' + encodeURIComponent(stats.missed.toString()) + '&statShotFired=' + encodeURIComponent(stats.shotFired.toString())
     );
+
+    document.location.href="ranking.php";
 }
 
 function clearScreen() {
