@@ -1,6 +1,8 @@
+//#region Variables & constantes
+
 // Constantes du jeu
-var GAME_WIDTH = 600;
-var GAME_HEIGHT = 800;
+var GAME_WIDTH = 500;
+var GAME_HEIGHT = 600;
 var GAME_ENEMY_NUMBER = 20;
 var GAME_PIXEL_MOVE = 8;
 var SHOT_LIMIT = 5;
@@ -40,8 +42,11 @@ var interval;
 var isPaused;
 var countImageLoad = 0;
 
+//#endregion
+
 $(document).ready(function(){
     // get context
+
     if(initGame() == null) { return; }
 
     imagePlayer.onload = function() {
@@ -78,11 +83,13 @@ function initGame() {
     GAME_HEIGHT = elem.height;
 
     imagePlayer = new Image();
-    imagePlayer.src = 'img/player_up.png';
+    imagePlayer.src = 'assets/img/player.png';
     imageShot = new Image();
-    imageShot.src = 'img/carotte-mini.png';
+    imageShot.src = 'assets/img/plume.png';
     imageEnemy = new Image();
-    imageEnemy.src = 'img/mechant-mini.png';
+    imageEnemy.src = 'assets/img/pomme.png';
+
+    console.log(imageEnemy);
 
     isPaused = false;
     return true;
@@ -168,7 +175,7 @@ function moveEnemy(myEnemy, indexEnemy) {
     // check collision with player
     if (myEnemy.posX < player.posX + player.size && myEnemy.posX + myEnemy.size > player.posX &&
         myEnemy.posY < player.posY + player.size && myEnemy.size + myEnemy.posY > player.posY) {
-        loadGame();
+        endGame();
     }
 
     // check collision with bullet
