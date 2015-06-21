@@ -57,14 +57,11 @@ nav ul {
 
 #game_side, #score_side {
 	display: inline-block;
+	padding: 0px 20px;
 	vertical-align: top;
 }
 #game_side {
-	width: 65%;
 	border-right: 1px solid #000000;
-}
-#score_side {
-	width: 30%;
 }
 
 .center {
